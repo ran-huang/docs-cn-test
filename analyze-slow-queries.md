@@ -5,11 +5,6 @@ summary: 学习如何定位和分析慢查询。
 
 # 分析慢查询
 
-处理慢查询分为两步：
-
-1. 从大量查询中定位出哪一类查询比较慢
-2. 分析这类慢查询的原因
-
 第一步可以通过[慢日志](/identify-slow-queries.md)、[statement-summary](/statement-summary-tables.md) 方便地定位，推荐直接使用 [TiDB Dashboard](/dashboard/dashboard-overview.md)，它整合了这两个功能，且能方便直观地在浏览器中展示出来。本文聚焦第二步。
 
 首先将慢查询归因成两大类：

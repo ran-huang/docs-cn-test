@@ -55,4 +55,5 @@ jobs:
           GATSBY_ALGOLIA_APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID }}
           GATSBY_ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
         run: |
-          yarn build --verbose
+          yarn build
+          yarn develop
