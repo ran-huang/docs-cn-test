@@ -1,0 +1,58 @@
+name: Incremental Build Triggered By Push Events
+
+on: [pull_request]
+
+jobs:
+  build:
+    name: Retrieve docs and deploy the website
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: 'pingcap/website-docs'
+
+      - uses: actions/setup-node@v2
+        if: ${{ !env.ACT }}
+        with:
+          node-version: '16'
+          cache: 'yarn'
+
+      - name: Install yarn (ACT)
+        # Since actions/setup-node currently errors out when run locally, here is a manual installation
+        if: ${{ env.ACT }}
+        run: |
+          echo "node version:"
+          node -v
+          echo "npm version:"
+          npm -v
+          npm install -g yarn
+
+      - name: Install deps
+        run: yarn
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v17.3
+
+#      - name: List all changed files
+#        run: |
+#          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+#            echo "$file was changed"
+#          done
+
+      # for docs-cn master
+      - name: Sync changed docs
+        if: ${{ steps.changed-files.outputs.any_changed }}
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file was changed. Added to markdown-pages"
+            mv $file ./markdown-pages/zh/tidb/master/$file
+          done
+
+      - name: Build website
+        env:
+          CI: true
+          GATSBY_ALGOLIA_APPLICATION_ID: ${{ secrets.ALGOLIA_APPLICATION_ID }}
+          GATSBY_ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+        run: |
+          yarn build --verbose
