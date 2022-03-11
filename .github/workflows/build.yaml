@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: 'pingcap/website-docs'
+          repository: 'ran-huang/website-docs'
 
       - uses: actions/setup-node@v2
         if: ${{ !env.ACT }}
